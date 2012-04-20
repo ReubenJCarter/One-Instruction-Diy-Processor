@@ -15,4 +15,6 @@ and easy to understand design. These feastures make this design perfect for an e
 tool, and could be build quite easily with simple 7400 series chips. The project aim is to 
 also produce a software toolkit for devices of this kind, including a simple assembler 
 and emulator. Although the device uses just a single instruction, there will be a defined
-set of functional units mapped to the address space. 
+set of functional units mapped to the address space. This allows for a "virtual" assembely 
+language with more complex instructions that just move. This means that the transport triggered
+architecture is hidden from the programmer.
