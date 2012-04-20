@@ -1,0 +1,18 @@
+The idea for this project is to design a modular computer processor architectue,
+with the ultimate in simplicity, reduced design, and the smallest component count. The projects 
+goal is purley educational, with ideas layed out in a simple and easy to understand manner.
+This computer only has one instruction, a move instruction which moves data from one 
+memmory adress to another. This process is at the heart of the computer. This may seem 
+ridiculous, however Using this one instruction, more complex instructions can be exicuted by 
+mapping functional modules to the adress space of our device. 
+For example the inputs and outputs of an alu are mapped to a memory loaction, so 
+by moving data to the inputs, and then from the outputs, an alu operation can be performed.
+A key benefit of this design is modularity. Every component of the processor is treated as a
+seperate functional module addressed in the memory space. This means one can build just the
+basic "move instruction" unit, and then add on extra modules later to meet requirements. Also 
+there is no complex instruction decodeing logic required, making for an incredibly simple,
+and easy to understand design. These feastures make this design perfect for an educational
+tool, and could be build quite easily with simple 7400 series chips. The project aim is to 
+also produce a software toolkit for devices of this kind, including a simple assembler 
+and emulator. Although the device uses just a single instruction, there will be a defined
+set of functional units mapped to the address space. 
