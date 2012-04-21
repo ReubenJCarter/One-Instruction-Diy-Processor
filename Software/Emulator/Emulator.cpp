@@ -183,21 +183,6 @@ int Log::errorNumber = 0;
 int Log::assertionFail = 0;
 int Log::assertionPass = 0;
 
-class Alu
-{
-  private:
-		  
-  public:
-		 
-};
-
-class Register
-{
-  private:
-          
-  public:
-         
-};
 
 class Ram
 {
@@ -248,6 +233,7 @@ class Ram
 		   }
 		 }
 };
+
 
 class Rom
 {
@@ -342,22 +328,22 @@ class Rom
 		   {
 		     if(romImage[i] > 47 && romImage[i] < 58 || romImage[i] > 64 && romImage[i] < 71)
 			 {
-			   if(counting = false)
+			   if(counting == false)
 			   {
 			     factor = 1;
-				 value = factorTen * HexCharToInt(romImage[i]);
+				 value = factor * HexCharToInt(romImage[i]);
 				 factor *= 16;
 			   }
 			   else
 			   {
-			     value = factorTen * HexCharToInt(romImage[i]);
+			     value += factor * HexCharToInt(romImage[i]);
 				 factor *= 16;
 			   } 
-			   counting = true;
+			   counting == true;
 			 }
 			 else
 			 {
-			   if(counting = true)
+			   if(counting == true)
 			   {
 			     data[adressPointer] = value;
 			     adressPointer++;
@@ -368,21 +354,60 @@ class Rom
 		 }
 };
 
-class GPIO
-{
-  private:
-		  
-  public:
-         
-};
 
 class TTCore
 {
   private:
-          
+          Rom rom;
+		  Ram ram;
+		  unsigned int programCounter;
+		  
   public:
-	     
+	     TTCore()
+		 {
+		   programCounter = 0;
+		 }
+		 
+		 void Cycle()
+		 {
+		   unsigned int value;
+		   unsigned int adress1;
+		   unsigned int adress2;
+		   
+		   if(programCounter >= ROM_LOWER && programCounter <= ROM_UPPER)
+		   {
+		     adress = rom[programCounter - ROM_LOWER];
+		   }
+		   
+		   if(programCounter >= RAM_LOWER && programCounter <= RAM_UPPER)
+		   {
+		     adress = rom[programCounter - RAM_LOWER];
+		   }
+		   
+		   switch(programCounter)
+		   {
+		     case PC: adress = 
+			 case PC_IF_CARRY:
+			 case PC_IF_SIGN: 
+		     case PC_IF_ZERO: 
+			 case ADDER: 
+			 case ADDER_INC: 
+			 case REG_B: 
+			 case REG_A: 
+			 case GPO1: 
+			 case GPI1: 
+			 case GPO2: 
+			 case GPI2:
+			 case XOR_AB: 
+			 case OR_AB: 
+			 case AND_AB: 
+			 case NOT_A: 
+			 default :
+		   }
+		   
+		 }
 };
+
 
 int main()
 {
