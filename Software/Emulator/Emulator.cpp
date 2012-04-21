@@ -453,33 +453,34 @@ class TTCore
 		   {
 		     case PC: 
 			   programCounter = fData;
-			 
+			   break;
 			 case PC_IF_CARRY:
 			   if( (regA + regB) > 0xFFFF)
 			     programCounter = fData; 
-			   
+			   break;
 			 case PC_IF_SIGN: 
 			   if(accumulator >= 0x8000)
 		         programCounter = fData;
-			   
+			   break;
 			 case PC_IF_ZERO: 
 			   if(accumulator == 0)
 			     programCounter = fData;
-			   
+			   break;
 			 case REG_B: 
 			   regB = fData;
-			 
+			   break;
 			 case REG_A: 
 			   regA = fData;
-			   
+			   break;
 			 case ACCUMULATOR:
 			   accumulator = fData;
-			 
+			   break;
 			 case GPO1: 
 			   gpo1 = fData;
-			 
+			   break;
 			 case GPO2: 
 			   gpo2 = fData;
+			   break;
 		   }
 		 }
 		 
@@ -499,30 +500,31 @@ class TTCore
 		   {
 			 case ADDER:
 			   return regA + regB;
-			   
+			   break;
 			 case ADDER_INC: 
 			   return regA + regB + 1;
-			   
+			   break;
 			 case GPI1: 
 			   return gpi1;
-			   
+			   break;
 			 case GPI2:
 			   return gpi2;
-			   
+			   break;
 			 case XOR_AB: 
 			   return regA ^ regB;
-			 
+			   break;
 			 case OR_AB: 
 			   return regA | regB;
-			 
+			   break;
 			 case AND_AB: 
 			   return regA & regB;
-			  
+			   break;
 			 case NOT_A: 
 			   return ~regA;
-			   
+			   break;
 			 case ACCUMULATOR:
 			   return accumulator;
+			   break;
 		   }
 		 }
 		 
