@@ -14,10 +14,11 @@ using namespace std;
 #define ADDER_INC 0xFFFA
 #define REG_B 0xFFF9
 #define REG_A 0xFFF8
-#define GPO1 0xFFF7
-#define GPI1 0xFFF6
-#define GPO2 0xFFF5
-#define GPI2 0xFFF4
+#define ACCUMULATOR 0xFFF7
+#define GPO1 0xFFF6
+#define GPI1 0xFFF5
+#define GPO2 0xFFF4
+#define GPI2 0xFFF3
 #define XOR_AB 0xFFEF
 #define OR_AB 0xFFEE
 #define AND_AB 0xFFED
@@ -363,6 +364,7 @@ class TTCore
 		  unsigned int programCounter;
 		  unsigned int regA;
 		  unsigned int regB;
+		  unsigned int accumulator;
 		  
   public:
   		 unsigned int gpo1;
@@ -394,11 +396,11 @@ class TTCore
 			     programCounter = fData; 
 			   
 			 case PC_IF_SIGN: 
-			   if(fData >= 0x8000)
+			   if(accumulator >= 0x8000)
 		         programCounter = fData;
 			   
 			 case PC_IF_ZERO: 
-			   if(fData == 0)
+			   if(accumulator == 0)
 			     programCounter = fData;
 			   
 			 case REG_B: 
@@ -406,6 +408,9 @@ class TTCore
 			 
 			 case REG_A: 
 			   regA = fData;
+			   
+			 case ACCUMULATOR:
+			   accumulator = fData;
 			 
 			 case GPO1: 
 			   gpo1 = fData;
@@ -452,6 +457,9 @@ class TTCore
 			  
 			 case NOT_A: 
 			   return ~regA;
+			   
+			 case ACCUMULATOR:
+			   return accumulator;
 		   }
 		 }
 		 
