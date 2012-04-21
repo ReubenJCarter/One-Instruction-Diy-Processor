@@ -209,6 +209,11 @@ class Ram
 		 {
 		   size = fSize;
 		   data = new unsigned int[fSize];
+		   
+		   for(int i = 0; i < fSize; i++)
+		   {
+		     data[i] = 0;
+		   }
 		 }
 	
 		 unsigned int ReadFrom(unsigned int fAdress)
@@ -244,7 +249,7 @@ class Ram
 		   {
 		     for(unsigned int i = 0; i < size; i++)
 			 {
-			   fprintf(fptr, "%02X\n", data);
+			   fprintf(fptr, "%08X\n", data[i]);
 			 }
 		     fclose(fptr);
 		   }
@@ -300,7 +305,20 @@ class Rom
 			  case 'D': return 13;
 			  case 'E': return 14;
 			  case 'F': return 15;
+			  default : return 0;
 		    }
+		  }
+		  
+		  unsigned int HexStringToInt(string fStr)
+		  {
+		    unsigned int temp = 0;
+			unsigned int factor = 1;
+		    for( int i = (fStr.length() - 1); i >= 0; i--)
+			{
+			  temp += factor * HexCharToInt(fStr[i]);
+			  factor *= 16;
+			}
+			return temp;
 		  }
 		  
   public:
@@ -319,6 +337,10 @@ class Rom
 		 {
 		   size = fSize;
 		   data = new unsigned int[fSize];
+		   for(int i = 0; i < fSize; i++)
+		   {
+		     data[i] = 0;
+		   }
 		 }
 	
 		 unsigned int ReadFrom(unsigned int fAdress)
@@ -337,43 +359,35 @@ class Rom
 		 void LoadImage(string fFileName)
 		 {
 		   string romImage = LoadTextFile(fFileName);
+		   
+		   string tempStr ="";
 		   unsigned int adressPointer = 0;
-		   bool counting = false;
-		   unsigned int factor = 0;
-		   unsigned int value;
-		   for(int i = 0; i < romImage.length(); i++)
+		   
+		   for(unsigned int i = 0; i < romImage.length(); i++)
 		   {
-		     if(romImage[i] > 47 && romImage[i] < 58 || romImage[i] > 64 && romImage[i] < 71)
+		
+		     if(romImage[i] > 47 && romImage[i] < 58 || romImage[i] > 64 && romImage[i] < 91)
 			 {
-			   if(counting == false)
+			   tempStr.clear();
+			   tempStr += romImage[i];
+			   i++;
+			   
+			   if(i < romImage.length())
 			   {
-			     factor = 1;
-				 value = factor * HexCharToInt(romImage[i]);
-				 factor *= 16;
+			     while((romImage[i] > 47 && romImage[i] < 58 || romImage[i] > 64 && romImage[i] < 91) && i < romImage.length())
+			     {
+			       tempStr += romImage[i];
+			       i++;
+			     }
 			   }
-			   else
-			   {
-			     value += factor * HexCharToInt(romImage[i]);
-				 factor *= 16;
-			   } 
-			   counting == true;
+			   data[adressPointer] = HexStringToInt(tempStr);
+			   adressPointer++;
 			 }
-			 else
+			 
+			 if(adressPointer > size)
 			 {
-			   if(counting == true)
-			   {
-			     if(adressPointer < size)
-				 {
-			       data[adressPointer] = value;
-			       adressPointer++;
-				 }
-				 else 
-				 {
-				   break;
-				 }
-			   }
-			   counting = false;
-			 }
+			   break;
+		     }
 		   }
 		 }
 		 
@@ -385,7 +399,7 @@ class Rom
 		   {
 		     for(unsigned int i = 0; i < size; i++)
 			 {
-			   fprintf(fptr, "%02X\n", data);
+			   fprintf(fptr, "%08X\n", data[i]);
 			 }
 		     fclose(fptr);
 		   }
@@ -406,16 +420,26 @@ class TTCore
 		  unsigned int gpo2;
 		  unsigned int gpi1;
 		  unsigned int gpi2;
-		  unsigned int hault;
 		  
   public:
 	     
 		 TTCore()
 		 {
-		   programCounter = 0;
+		   Reset();
+		 }
+		 
+		 void Reset()
+		 {
 		   rom.SetSize(ROM_UPPER - ROM_LOWER + 1);
 		   ram.SetSize(RAM_UPPER - RAM_LOWER + 1);
-		   hault = false;
+		   programCounter = 0;
+		   regA = 0;
+		   regB = 0;
+		   accumulator = 0;
+		   gpo1 = 0;
+		   gpo2 = 0;
+		   gpi1 = 0;
+		   gpi2 = 0;
 		 }
 		 
 		 void WriteTo(unsigned int fAdress, unsigned int fData)
@@ -560,10 +584,10 @@ int main(int argc, char *argv[])
 	  core.Cycle();
 	}
 	
-	core.DumpRamImage("RomImage.im");
-	core.DumpRomImage("RamImage.im");
+	core.DumpRamImage("RamImage.im");
+	core.DumpRomImage("RomImage.im");
 	
-	printf("Ram and rom images dumped\nGPO1 = %02X\nGPO2 = %02X\n", core.ReadGPO1(), core.ReadGPO2());
+	printf("Ram and rom images dumped\nGPO1 = %08X\nGPO2 = %08X\n", core.ReadGPO1(), core.ReadGPO2());
   }
   else 
   {
