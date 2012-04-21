@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <string>
 
@@ -237,7 +238,7 @@ class Ram
 
 		 void DumpImage(string fFileName)
 		 {
-		   FILE* fptr = fopen(fFileName, "w");
+		   FILE* fptr = fopen(fFileName.c_str(), "w");
 		   
 		   if(fptr != 0)
 		   {
@@ -378,7 +379,7 @@ class Rom
 		 
 		 void DumpImage(string fFileName)
 		 {
-		   FILE* fptr = fopen(fFileName, "w");
+		   FILE* fptr = fopen(fFileName.c_str(), "w");
 		   
 		   if(fptr != 0)
 		   {
@@ -549,13 +550,11 @@ class TTCore
 
 int main(int argc, char *argv[])
 {
-  Log::Clear();
-  Log::ProgramStart();
   if(argc == 3)
   {
     TTCore core;
-	core.LoadRomImage(argc[1]);
-	for(int i = 0; i < atoi(argc[2]); i++)
+	core.LoadRomImage(argv[1]);
+	for(int i = 0; i < atoi(argv[2]); i++)
 	{
 	  core.Cycle();
 	}
@@ -566,6 +565,6 @@ int main(int argc, char *argv[])
   {
     printf("failed to find rom image file");
   }
-  Log::ProgramEnd();
+  
   return 0;
 }
