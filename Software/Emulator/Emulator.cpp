@@ -234,6 +234,20 @@ class Ram
 		     Log::WriteError("Ram adress went out of bounds on write");
 		   }
 		 }
+
+		 void DumpImage(string fFileName)
+		 {
+		   FILE* fptr = fopen(fFileName, "w");
+		   
+		   if(fptr != 0)
+		   {
+		     for(unsigned int i = 0; i < size; i++)
+			 {
+			   fprintf(fptr, "%02X\n", data);
+			 }
+		     fclose(fptr);
+		   }
+		 }
 };
 
 
@@ -347,11 +361,32 @@ class Rom
 			 {
 			   if(counting == true)
 			   {
-			     data[adressPointer] = value;
-			     adressPointer++;
+			     if(adressPointer < size)
+				 {
+			       data[adressPointer] = value;
+			       adressPointer++;
+				 }
+				 else 
+				 {
+				   break;
+				 }
 			   }
 			   counting = false;
 			 }
+		   }
+		 }
+		 
+		 void DumpImage(string fFileName)
+		 {
+		   FILE* fptr = fopen(fFileName, "w");
+		   
+		   if(fptr != 0)
+		   {
+		     for(unsigned int i = 0; i < size; i++)
+			 {
+			   fprintf(fptr, "%02X\n", data);
+			 }
+		     fclose(fptr);
 		   }
 		 }
 };
@@ -366,18 +401,20 @@ class TTCore
 		  unsigned int regA;
 		  unsigned int regB;
 		  unsigned int accumulator;
+  		  unsigned int gpo1;
+		  unsigned int gpo2;
+		  unsigned int gpi1;
+		  unsigned int gpi2;
+		  unsigned int hault;
 		  
   public:
-  		 unsigned int gpo1;
-		 unsigned int gpo2;
-		 unsigned int gpi1;
-		 unsigned int gpi2;
 	     
 		 TTCore()
 		 {
 		   programCounter = 0;
 		   rom.SetSize(ROM_UPPER - ROM_LOWER + 1);
 		   ram.SetSize(RAM_UPPER - RAM_LOWER + 1);
+		   hault = false;
 		 }
 		 
 		 void WriteTo(unsigned int fAdress, unsigned int fData)
@@ -466,18 +503,69 @@ class TTCore
 		 
 		 void Cycle()
 		 {
-		    unsigned int adr1 = ReadFrom(programCounter);
-			programCounter++;
-			unsigned int adr2 = ReadFrom(programCounter);
-			programCounter++;
-			unsigned int value = ReadFrom(adr1);
-			WriteTo(adr2, value);
+		   unsigned int adr1 = ReadFrom(programCounter);
+		   programCounter++;
+		   unsigned int adr2 = ReadFrom(programCounter);
+		   programCounter++;
+		   unsigned int value = ReadFrom(adr1);
+		   WriteTo(adr2, value);
+		 }
+		 
+		 void LoadRomImage(string fFileName)
+		 {
+		   rom.LoadImage(fFileName);
+		 }
+		 
+		 unsigned int ReadGPO1()
+		 {
+		   return gpo1;
+		 }
+		 
+		 unsigned int ReadGPO2()
+		 {
+		   return gpo2;
+		 }
+		 
+		 void WriteGPI1(unsigned int fValue)
+		 {
+		   gpi1 = fValue;
+		 }
+		 
+		 void WriteGPI2(unsigned int fValue)
+		 {
+		   gpi2 = fValue;
+		 }
+		 
+		 void DumpRamImage(string fFileName)
+		 {
+		   ram.DumpImage(fFileName); 
+		 }
+		 void DumpRomImage(string fFileName)
+		 {
+		   rom.DumpImage(fFileName); 
 		 }
 };
 
 
-int main()
+int main(int argc, char *argv[])
 {
-  
+  Log::Clear();
+  Log::ProgramStart();
+  if(argc == 3)
+  {
+    TTCore core;
+	core.LoadRomImage(argc[1]);
+	for(int i = 0; i < atoi(argc[2]); i++)
+	{
+	  core.Cycle();
+	}
+	core.DumpRamImage("RomImage.im");
+	core.DumpRomImage("RamImage.im");
+  }
+  else 
+  {
+    printf("failed to find rom image file");
+  }
+  Log::ProgramEnd();
   return 0;
 }
