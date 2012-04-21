@@ -554,12 +554,16 @@ int main(int argc, char *argv[])
   {
     TTCore core;
 	core.LoadRomImage(argv[1]);
+	
 	for(int i = 0; i < atoi(argv[2]); i++)
 	{
 	  core.Cycle();
 	}
+	
 	core.DumpRamImage("RomImage.im");
 	core.DumpRomImage("RamImage.im");
+	
+	printf("Ram and rom images dumped\nGPO1 = %02X\nGPO2 = %02X\n", core.ReadGPO1(), core.ReadGPO2());
   }
   else 
   {
