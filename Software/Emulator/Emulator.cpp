@@ -361,50 +361,108 @@ class TTCore
           Rom rom;
 		  Ram ram;
 		  unsigned int programCounter;
+		  unsigned int regA;
+		  unsigned int regB;
 		  
   public:
-	     TTCore()
+  		 unsigned int gpo1;
+		 unsigned int gpo2;
+		 unsigned int gpi1;
+		 unsigned int gpi2;
+	     
+		 TTCore()
 		 {
 		   programCounter = 0;
+		   rom.SetSize(ROM_UPPER - ROM_LOWER + 1);
+		   ram.SetSize(RAM_UPPER - RAM_LOWER + 1);
+		 }
+		 
+		 void WriteTo(unsigned int fAdress, unsigned int fData)
+		 {
+		   if(fAdress >= RAM_LOWER && fAdress <= RAM_UPPER)
+		   {
+		     ram.WriteTo(fAdress - RAM_LOWER, fData);
+		   }
+		   
+		   switch(fAdress)
+		   {
+		     case PC: 
+			   programCounter = fData;
+			 
+			 case PC_IF_CARRY:
+			   if( (regA + regB) > 0xFFFF)
+			     programCounter = fData; 
+			   
+			 case PC_IF_SIGN: 
+			   if(fData >= 0x8000)
+		         programCounter = fData;
+			   
+			 case PC_IF_ZERO: 
+			   if(fData == 0)
+			     programCounter = fData;
+			   
+			 case REG_B: 
+			   regB = fData;
+			 
+			 case REG_A: 
+			   regA = fData;
+			 
+			 case GPO1: 
+			   gpo1 = fData;
+			 
+			 case GPO2: 
+			   gpo2 = fData;
+		   }
+		 }
+		 
+		 unsigned int ReadFrom(unsigned int fAdress)
+		 {
+		   if(fAdress >= ROM_LOWER && fAdress <= ROM_UPPER)
+		   {
+		     return rom.ReadFrom(fAdress - ROM_LOWER);
+		   }
+		   
+		   if(fAdress >= RAM_LOWER && fAdress <= RAM_UPPER)
+		   {
+		     return ram.ReadFrom(fAdress - RAM_LOWER);
+		   }
+		   
+		   switch(fAdress)
+		   {
+			 case ADDER:
+			   return regA + regB;
+			   
+			 case ADDER_INC: 
+			   return regA + regB + 1;
+			   
+			 case GPI1: 
+			   return gpi1;
+			   
+			 case GPI2:
+			   return gpi2;
+			   
+			 case XOR_AB: 
+			   return regA ^ regB;
+			 
+			 case OR_AB: 
+			   return regA | regB;
+			 
+			 case AND_AB: 
+			   return regA & regB;
+			  
+			 case NOT_A: 
+			   return ~regA;
+		   }
 		 }
 		 
 		 void Cycle()
 		 {
-		   unsigned int value;
-		   unsigned int adress1;
-		   unsigned int adress2;
-		   
-		   if(programCounter >= ROM_LOWER && programCounter <= ROM_UPPER)
-		   {
-		     adress = rom[programCounter - ROM_LOWER];
-		   }
-		   
-		   if(programCounter >= RAM_LOWER && programCounter <= RAM_UPPER)
-		   {
-		     adress = rom[programCounter - RAM_LOWER];
-		   }
-		   
-		   switch(programCounter)
-		   {
-		     case PC: adress = 
-			 case PC_IF_CARRY:
-			 case PC_IF_SIGN: 
-		     case PC_IF_ZERO: 
-			 case ADDER: 
-			 case ADDER_INC: 
-			 case REG_B: 
-			 case REG_A: 
-			 case GPO1: 
-			 case GPI1: 
-			 case GPO2: 
-			 case GPI2:
-			 case XOR_AB: 
-			 case OR_AB: 
-			 case AND_AB: 
-			 case NOT_A: 
-			 default :
-		   }
-		   
+		    unsigned int adr1 = ReadFrom(programCounter);
+			programCounter++;
+			unsigned int adr2 = ReadFrom(programCounter);
+			programCounter++;
+			unsigned int value = ReadFrom(adr1);
+			WriteTo(a2, value);
 		 }
 };
 
