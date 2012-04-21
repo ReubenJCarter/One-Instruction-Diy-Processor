@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include <string>
 
 using namespace std;
@@ -470,7 +471,7 @@ class TTCore
 			unsigned int adr2 = ReadFrom(programCounter);
 			programCounter++;
 			unsigned int value = ReadFrom(adr1);
-			WriteTo(a2, value);
+			WriteTo(adr2, value);
 		 }
 };
 
