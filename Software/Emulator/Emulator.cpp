@@ -1,3 +1,11 @@
+/*
+
+This is an emulator for the Transport Triggered architecture.
+useage -> Emulator 'rom image file' 'number of processor cycles to perform'
+The rom images are text files with a list of hex values to be loaded.
+
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
