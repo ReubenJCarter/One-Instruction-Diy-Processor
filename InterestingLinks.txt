@@ -2,6 +2,10 @@
 /*Used for simple logic design*/
 http://ozark.hendrix.edu/~burch/logisim/ 
 
+/*Dia diagram editor home page*/
+/* used for block diagrams*/
+http://live.gnome.org/Dia
+
 /*Transport Triggered Arcitecture Explination*/
 1) http://en.wikipedia.org/wiki/Transport_triggered_architecture
 2) http://www.cl.cam.ac.uk/~jrs53/tta/tta.pdf
